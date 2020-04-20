@@ -111,8 +111,14 @@ const LoginScreen = props => {
 }
 
 LoginScreen.navigationOptions = navData => {
-  return {
-    headerLeft: () => <HeaderIcon navData={navData} iconName={'md-menu'}/>
+  if (navData.navigation.state.params.hideIcon) {
+    return {
+      headerLeft: () => <HeaderIcon back navData={navData} iconName={'md-arrow-back'}/>
+    }
+  } else {
+    return {
+      headerLeft: () => <HeaderIcon navData={navData} iconName={'md-menu'}/>
+    }
   }
 }
 

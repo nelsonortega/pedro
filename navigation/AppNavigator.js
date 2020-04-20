@@ -53,11 +53,13 @@ const sideMenuElementStyle = {
 //Stack Navigators
 const HomeNavigator = createStackNavigator({
   Home: HomeScreen,
-  Cart: CartScreen
-}, { defaultNavigationOptions: navigationOptions })
-
-const CreateProductNavigator = createStackNavigator({
-  CreateProduct: CreateProductScreen
+  Cart: CartScreen,
+  CreateProduct: CreateProductScreen,
+  Register: RegisterScreen,
+  Login: {
+    screen: LoginScreen,
+    params: {'route': 'CreateProduct', 'hideIcon': true}
+  }
 }, { defaultNavigationOptions: navigationOptions })
 
 const OrdersNavigator = createStackNavigator({
@@ -80,7 +82,7 @@ const CreateAuthNavigator = name => {
   const AuthNavigator = createStackNavigator({
     Login: {
       screen: LoginScreen, 
-      params: {'route': name}
+      params: {'route': name, 'hideIcon': false}
     },
     Register: RegisterScreen
   }, { defaultNavigationOptions: navigationOptions })
@@ -92,11 +94,6 @@ const CreateAuthNavigator = name => {
 const ProfileSwitchNavigator = createSwitchNavigator({
   Auth: CreateAuthNavigator('Profile'),
   Profile: ProfileNavigator
-})
-
-const CreateProductSwitchNavigator = createSwitchNavigator({
-  Auth: CreateAuthNavigator('CreateProduct'),
-  CreateProduct: CreateProductNavigator
 })
 
 const OrdersSwitchNavigator = createSwitchNavigator({
@@ -111,13 +108,6 @@ const MainSideNavigator = createDrawerNavigator({
     navigationOptions: {
       title: 'Inicio',
       drawerIcon: ({tintColor}) => <Ionicons size={20} color={tintColor} name='md-home' />
-    }
-  },
-  CreateProduct: {
-    screen: CreateProductSwitchNavigator,
-    navigationOptions: {
-      title: 'Crear Producto',
-      drawerIcon: ({tintColor}) => <Ionicons size={20} color={tintColor} name='ios-create' />
     }
   },
   Orders: {

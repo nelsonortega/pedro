@@ -12,10 +12,14 @@ const HeaderIcon = props => {
     props.navData.navigation.navigate('Cart')
   }
 
+  const goBack = () => {
+    props.navData.navigation.popToTop()
+  }
+
   return (
-    <TouchableOpacity style={styles.icon} onPress={props.cart ? openCart : toggleDrawer}>
+    <TouchableOpacity style={styles.icon} onPress={props.cart ? openCart : props.back ? goBack : toggleDrawer}>
       <Ionicons 
-        size={30} 
+        size={props.back ? 24 : 30} 
         color='white' 
         name={props.iconName} 
       />

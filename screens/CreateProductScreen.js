@@ -14,7 +14,10 @@ const CreateProductScreen = props => {
     const userData = await AsyncStorage.getItem('userData')
     if (!userData) {
       setLoginLoading(false)
-      props.navigation.navigate('Auth')
+      props.navigation.navigate('Login', {
+        'route': 'CreateProduct', 
+        'hideIcon': true
+      })
       return
     }
     const transformedData = JSON.parse(userData)
@@ -23,7 +26,10 @@ const CreateProductScreen = props => {
 
     if (expirationDate <= new Date() || !token || !userId) {
       setLoginLoading(false)
-      props.navigation.navigate('Auth')
+      props.navigation.navigate('Login', {
+        'route': 'CreateProduct', 
+        'hideIcon': true
+      })
       return
     }
 
@@ -54,7 +60,7 @@ const CreateProductScreen = props => {
 
 CreateProductScreen.navigationOptions = navData => {
   return {
-    headerLeft: () => <HeaderIcon navData={navData} iconName={'md-menu'}/>
+    headerLeft: () => <HeaderIcon back navData={navData} iconName={'md-arrow-back'}/>
   }
 }
 
