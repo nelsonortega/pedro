@@ -2,18 +2,19 @@ import React from 'react'
 import Colors from '../constants/Colors'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
+import CustomInput from '../components/CustomInput'
 import * as AuthActions from '../store/actions/AuthActions'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
 import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
-import { StyleSheet, View, KeyboardAvoidingView, TextInput, TouchableOpacity, Alert, AsyncStorage } from 'react-native'
+import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Alert, AsyncStorage } from 'react-native'
 
 const LoginScreen = props => {
   const dispatch = useDispatch()
   const [error, setError] = useState()
   const [email, setEmail] = useState('')
-  const [password, setPasswprd] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [loginLoading, setLoginLoading] = useState(false)
 
@@ -80,18 +81,18 @@ const LoginScreen = props => {
     <KeyboardAvoidingView keyboardVerticalOffset={30} style={styles.screen}>
       <CustomText bold style={styles.title}>Inicia sesión</CustomText>
       <View style={styles.formContainer}>
-        <TextInput 
-          style={styles.input} 
+        <CustomInput 
           placeholder='Correo electrónico' 
+          placeholderTextColor="grey" 
           value={email} 
           onChangeText={text => setEmail(text)}
         />
-        <TextInput 
-          secureTextEntry={true} 
-          style={[styles.input, styles.inputPass]} 
+        <CustomInput 
+          password
           placeholder='Contraseña' 
+          placeholderTextColor="grey" 
           value={password} 
-          onChangeText={text => setPasswprd(text)}
+          onChangeText={text => setPassword(text)}
         />
         {loading ? <CustomActivityIndicator small /> : (
           <View style={styles.loginContainer}> 
@@ -135,18 +136,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     alignItems: 'center'
-  },
-  input: {
-    width: '90%',
-    fontSize: 17,
-    fontFamily: 'open-sans',
-    borderBottomWidth: 2,
-    borderColor: 'black',
-    paddingTop: 20,
-    paddingBottom: 5
-  },
-  inputPass: {
-    marginTop: 20
   },
   loginContainer: {
     width: '100%',
