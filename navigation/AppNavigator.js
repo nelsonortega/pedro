@@ -8,7 +8,6 @@ import OrdersScreen from '../screens/OrdersScreen'
 import AboutUsScreen from '../screens/AboutUsScreen'
 import ContactScreen from '../screens/ContactScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import RegisterScreen from '../screens/RegisterScreen'
 import CreateProductScreen from '../screens/CreateProductScreen'
 
 import { Dimensions } from 'react-native'
@@ -55,7 +54,6 @@ const HomeNavigator = createStackNavigator({
   Home: HomeScreen,
   Cart: CartScreen,
   CreateProduct: CreateProductScreen,
-  Register: RegisterScreen,
   Login: {
     screen: LoginScreen,
     params: {'route': 'CreateProduct', 'hideIcon': true}
@@ -83,8 +81,7 @@ const CreateAuthNavigator = name => {
     Login: {
       screen: LoginScreen, 
       params: {'route': name, 'hideIcon': false}
-    },
-    Register: RegisterScreen
+    }
   }, { defaultNavigationOptions: navigationOptions })
 
   return AuthNavigator

@@ -16,12 +16,12 @@ const LoginScreen = props => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loginScreen, setLoginScreen] = useState(true)
   const [loginLoading, setLoginLoading] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const openRegisterScreen = () => {
-    props.navigation.navigate({
-      routeName: 'Register'
-    })
+  const switchLoginRegisterScreen = () => {
+    setLoginScreen(!loginScreen)
   }
 
   const tryLogin = async () => {
@@ -74,12 +74,24 @@ const LoginScreen = props => {
     }
   }
 
+  const register = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      await dispatch(AuthActions.register(email, password))
+      props.navigation.navigate(props.navigation.state.params.route)
+    } catch (error) {
+      setError(error.message)
+      setLoading(false)
+    }
+  }
+
   if (loginLoading)
     return <CustomActivityIndicator />
 
   return (
     <KeyboardAvoidingView keyboardVerticalOffset={30} style={styles.screen}>
-      <CustomText bold style={styles.title}>Inicia sesión</CustomText>
+      <CustomText bold style={styles.title}>{loginScreen ? 'Iniciar Sesión' : 'Regístrate'}</CustomText>
       <View style={styles.formContainer}>
         <CustomInput 
           placeholder='Correo electrónico' 
@@ -94,15 +106,24 @@ const LoginScreen = props => {
           value={password} 
           onChangeText={text => setPassword(text)}
         />
+        {loginScreen ? <View /> : (
+          <CustomInput 
+            password
+            placeholder='Confirmar contraseña' 
+            placeholderTextColor="grey" 
+            value={confirmPassword} 
+            onChangeText={text => setConfirmPassword(text)}
+          />
+        )}
         {loading ? <CustomActivityIndicator small /> : (
           <View style={styles.loginContainer}> 
-            <TouchableOpacity style={styles.loginContainer} onPress={login}>
+            <TouchableOpacity style={styles.loginContainer} onPress={loginScreen ? login : register}>
               <View style={styles.loginButton}>
-                <CustomText style={styles.buttonText}>Iniciar Sesión</CustomText>
+                <CustomText style={styles.buttonText}>{loginScreen ? 'Iniciar Sesión' : 'Registrarme'}</CustomText>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.registerContainer} onPress={openRegisterScreen}>
-              <CustomText>No tienes una cuenta?</CustomText>
+            <TouchableOpacity style={styles.registerContainer} onPress={switchLoginRegisterScreen}>
+              <CustomText>{loginScreen ? 'No tienes una cuenta?' : 'Ya tengo una cuenta'}</CustomText>
             </TouchableOpacity>
           </View>
         )}
