@@ -4,24 +4,20 @@ import Colors from '../constants/Colors'
 import { StyleSheet, TextInput } from 'react-native'
 
 const CustomInput = props => {
-  const inputStyle = props.password ? [styles.input, styles.inputPass] : [styles.input]
-
   return (
-    <TextInput {...props} style={inputStyle} secureTextEntry={props.password} />
+    <TextInput {...props} style={styles.input} secureTextEntry={props.password} />
   )
 }
 
 const styles = StyleSheet.create({
   input: {
+    padding: 15,
     width: '90%',
     fontSize: 17,
     borderRadius: 7,
-    padding: 15,
+    marginBottom: 20,
     fontFamily: 'open-sans',
     backgroundColor: Colors.secondary
-  },
-  inputPass: {
-    marginTop: 20
   }
 })
 

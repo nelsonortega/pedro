@@ -75,14 +75,20 @@ const LoginScreen = props => {
   }
 
   const register = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      await dispatch(AuthActions.register(email, password))
-      props.navigation.navigate(props.navigation.state.params.route)
-    } catch (error) {
-      setError(error.message)
-      setLoading(false)
+    if (password.length < 6) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres', [{text: 'Ok'}])
+    } else if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden', [{text: 'Ok'}])
+    } else {
+      setLoading(true)
+      setError(null)
+      try {
+        await dispatch(AuthActions.register(email, password))
+        props.navigation.navigate(props.navigation.state.params.route)
+      } catch (error) {
+        setError(error.message)
+        setLoading(false)
+      }
     }
   }
 
@@ -97,14 +103,14 @@ const LoginScreen = props => {
           placeholder='Correo electrónico' 
           placeholderTextColor="grey" 
           value={email} 
-          onChangeText={text => setEmail(text)}
+          onChangeText={text => setEmail(text.replace(/\s/g, ''))}
         />
         <CustomInput 
           password
           placeholder='Contraseña' 
           placeholderTextColor="grey" 
           value={password} 
-          onChangeText={text => setPassword(text)}
+          onChangeText={text => setPassword(text.replace(/\s/g, ''))}
         />
         {loginScreen ? <View /> : (
           <CustomInput 
@@ -112,7 +118,7 @@ const LoginScreen = props => {
             placeholder='Confirmar contraseña' 
             placeholderTextColor="grey" 
             value={confirmPassword} 
-            onChangeText={text => setConfirmPassword(text)}
+            onChangeText={text => setConfirmPassword(text.replace(/\s/g, ''))}
           />
         )}
         {loading ? <CustomActivityIndicator small /> : (
@@ -163,15 +169,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   loginButton: {
-    marginTop: 20,
-    borderRadius: 50,
     width: '90%',
+    borderRadius: 50,
     backgroundColor: Colors.primary
   },
   buttonText: {
     color: 'white',
-    paddingVertical: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingVertical: 20
   },
   registerContainer: {
     width: '100%',

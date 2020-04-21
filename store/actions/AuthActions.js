@@ -27,11 +27,19 @@ export const register = (email, password) => {
     )
   
     if (!response.ok) {
+      let message = 'Algo salio mal'
       const errorResponse = await response.json()
       const error = errorResponse.error.message
-      const message = 'Algo salio mal'
 
-      throw new Error(error);
+      if (error === 'INVALID_EMAIL') {
+        message = 'El correo electrónico no es válido'
+      } else if (error === 'EMAIL_EXISTS') {
+        message = 'El correo electrónico ya está registrado'
+      } else {
+        message = error
+      }
+      
+      throw new Error(message);
     }
   
     const responseData = await response.json()
@@ -59,11 +67,23 @@ export const login = (email, password) => {
     )
   
     if (!response.ok) {
+      let message = 'Algo salio mal'
       const errorResponse = await response.json()
       const error = errorResponse.error.message
-      const message = 'Algo salio mal'
 
-      throw new Error(error);
+      if (error === 'INVALID_EMAIL') {
+        message = 'El correo electrónico no es válido'
+      } else if (error === 'EMAIL_NOT_FOUND') {
+        message = 'El correo electrónico no está registrado'
+      } else if (error === 'INVALID_PASSWORD') {
+        message = 'La contraseña es incorrecta'
+      } else if (error === 'USER_DISABLED') {
+        message = 'El usuario fue deshabilitado'
+      } else {
+        message = error
+      }
+      
+      throw new Error(message);
     }
   
     const responseData = await response.json()
