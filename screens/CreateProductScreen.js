@@ -14,7 +14,7 @@ const CreateProductScreen = props => {
     const userData = await AsyncStorage.getItem('userData')
     if (!userData) {
       setLoginLoading(false)
-      props.navigation.navigate('Login', {
+      props.navigation.navigate('Authentication', {
         'route': 'CreateProduct', 
         'hideIcon': true
       })
@@ -26,7 +26,7 @@ const CreateProductScreen = props => {
 
     if (expirationDate <= new Date() || !token || !userId) {
       setLoginLoading(false)
-      props.navigation.navigate('Login', {
+      props.navigation.navigate('Authentication', {
         'route': 'CreateProduct', 
         'hideIcon': true
       })

@@ -7,14 +7,14 @@ import { useState, useEffect } from 'react'
 import { View, StyleSheet, Button, AsyncStorage } from 'react-native'
 
 const HomeScreen = props => {
-  const [route, setRoute] = useState('Login')
+  const [route, setRoute] = useState('Authentication')
   const [loginLoading, setLoginLoading] = useState(false)
 
   const tryLogin = async () => {
     setLoginLoading(true)
     const userData = await AsyncStorage.getItem('userData')
     if (!userData) {
-      setRoute('Login')
+      setRoute('Authentication')
       setLoginLoading(false)
       return
     }
@@ -23,7 +23,7 @@ const HomeScreen = props => {
     const expirationDate = new Date(expiryDate)
 
     if (expirationDate <= new Date() || !token || !userId) {
-      setRoute('Login')
+      setRoute('Authentication')
       setLoginLoading(false)
       return
     }

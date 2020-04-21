@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Alert, AsyncStorage } from 'react-native'
 
-const LoginScreen = props => {
+const AuthenticationScreen = props => {
   const dispatch = useDispatch()
   const [error, setError] = useState()
   const [email, setEmail] = useState('')
@@ -138,7 +138,7 @@ const LoginScreen = props => {
   )
 }
 
-LoginScreen.navigationOptions = navData => {
+AuthenticationScreen.navigationOptions = navData => {
   if (navData.navigation.state.params.hideIcon) {
     return {
       headerLeft: () => <HeaderIcon back navData={navData} iconName={'md-arrow-back'}/>
@@ -185,4 +185,4 @@ const styles = StyleSheet.create({
   }
 }) 
 
-export default LoginScreen
+export default AuthenticationScreen

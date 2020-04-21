@@ -3,12 +3,12 @@ import Colors from '../constants/Colors'
 import SideMenu from '../components/SideMenu'
 import HomeScreen from '../screens/HomeScreen'
 import CartScreen from '../screens/CartScreen'
-import LoginScreen from '../screens/LoginScreen'
 import OrdersScreen from '../screens/OrdersScreen'
 import AboutUsScreen from '../screens/AboutUsScreen'
 import ContactScreen from '../screens/ContactScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import CreateProductScreen from '../screens/CreateProductScreen'
+import AuthenticationScreen from '../screens/AuthenticationScreen'
 
 import { Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
@@ -54,8 +54,8 @@ const HomeNavigator = createStackNavigator({
   Home: HomeScreen,
   Cart: CartScreen,
   CreateProduct: CreateProductScreen,
-  Login: {
-    screen: LoginScreen,
+  Authentication: {
+    screen: AuthenticationScreen,
     params: {'route': 'CreateProduct', 'hideIcon': true}
   }
 }, { defaultNavigationOptions: navigationOptions })
@@ -78,8 +78,8 @@ const ProfileNavigator = createStackNavigator({
 
 const CreateAuthNavigator = name => {
   const AuthNavigator = createStackNavigator({
-    Login: {
-      screen: LoginScreen, 
+    Authentication: {
+      screen: AuthenticationScreen, 
       params: {'route': name, 'hideIcon': false}
     }
   }, { defaultNavigationOptions: navigationOptions })
@@ -87,7 +87,7 @@ const CreateAuthNavigator = name => {
   return AuthNavigator
 }
 
-//Switch Login Navigators
+//Switch Authentication Navigators
 const ProfileSwitchNavigator = createSwitchNavigator({
   Auth: CreateAuthNavigator('Profile'),
   Profile: ProfileNavigator
