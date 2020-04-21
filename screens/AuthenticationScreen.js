@@ -41,7 +41,7 @@ const AuthenticationScreen = props => {
     }
 
     props.navigation.navigate(props.navigation.state.params.route)
-    dispatch(AuthActions.authenticate(userId, token))
+    dispatch(AuthActions.autoAuthenticate(userId, token))
   }
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const AuthenticationScreen = props => {
     setLoading(true)
     setError(null)
     try {
-      await dispatch(AuthActions.login(email, password))
+      await dispatch(AuthActions.authenticate(email, password, true))
       props.navigation.navigate(props.navigation.state.params.route)
     } catch (error) {
       setError(error.message)
@@ -83,7 +83,7 @@ const AuthenticationScreen = props => {
       setLoading(true)
       setError(null)
       try {
-        await dispatch(AuthActions.register(email, password))
+        await dispatch(AuthActions.authenticate(email, password, false))
         props.navigation.navigate(props.navigation.state.params.route)
       } catch (error) {
         setError(error.message)
