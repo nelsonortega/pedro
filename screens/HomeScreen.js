@@ -3,13 +3,13 @@ import Colors from '../constants/Colors'
 import Product from '../components/Product'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
+import HomeHeader from '../components/HomeHeader'
 import * as ProductActions from '../store/actions/ProductActions'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useCallback } from 'react'
 import { View, StyleSheet, Button, AsyncStorage, FlatList } from 'react-native'
-import HomeHeader from '../components/HomeHeader'
 
 const HomeScreen = props => {
   const dispatch = useDispatch()
@@ -84,7 +84,6 @@ const HomeScreen = props => {
   }, [tryLogin])
 
   const createProduct = () => {
-    //dispatch(ProductActions.createProduct('Titulo', 'desc', 'cat', '1000', 'https://www.laespanolaaceites.com/wp-content/uploads/2019/06/pizza-con-chorizo-jamon-y-queso.jpg'))
     props.navigation.navigate(route, {
       'route': 'CreateProduct', 
       'hideIcon': true

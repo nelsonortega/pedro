@@ -1,12 +1,20 @@
 import React from 'react'
+import Colors from '../constants/Colors'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
+import CustomInput from '../components/CustomInput'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
 import { useState, useEffect } from 'react'
-import { View, StyleSheet, AsyncStorage } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { View, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
 
 const CreateProductScreen = props => {
+  const [title, setTitle] = useState('')
+  const [price, setPrice] = useState('')
+  const [image, setImage] = useState('')
+  const [category, setCategory] = useState('')
+  const [description, setDescription] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
 
   const tryLogin = async () => {
@@ -53,7 +61,44 @@ const CreateProductScreen = props => {
 
   return (
     <View style={styles.screen}>
-      <CustomText>CreateProductScreen</CustomText>
+      <CustomText style={styles.text}>Publicar un producto</CustomText>
+      <View style={styles.center}>
+        <CustomInput 
+          placeholder='Título del producto' 
+          placeholderTextColor="grey" 
+          value={title} 
+          onChangeText={text => setTitle(text)}
+        />
+        <CustomInput 
+          placeholder='Descripción del producto' 
+          placeholderTextColor="grey" 
+          value={description} 
+          onChangeText={text => setDescription(text)}
+        />
+        <CustomInput 
+          placeholder='Categoría' 
+          placeholderTextColor="grey" 
+          value={category} 
+          onChangeText={text => setCategory(text)}
+        />
+        <CustomInput 
+          placeholder='Precio' 
+          placeholderTextColor="grey" 
+          value={price} 
+          onChangeText={text => setPrice(text)}
+        />
+      </View>
+      <CustomText style={styles.text}>Añade una imagen</CustomText>
+      <TouchableOpacity>
+        <View style={styles.addImageButton}>
+          <Ionicons size={35} color='grey' name='md-add' />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonContainer}>
+        <View style={styles.button}>
+          <CustomText style={styles.buttonText}>Crear Producto</CustomText>
+        </View>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -67,9 +112,40 @@ CreateProductScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    paddingTop: 20,
+    backgroundColor: '#fff'
+  },
+  center: {
+    alignItems: 'center'
+  },
+  text: {
+    fontSize: 17,
+    marginLeft: '5%',
+    marginBottom: 10
+  },
+  addImageButton: {
+    height: 120,
+    width: '90%',
+    borderRadius: 7,
+    marginLeft: '5%',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: Colors.secondary,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center'
+  },
+  button: {
+    width: '90%',
+    borderRadius: 7,
+    backgroundColor: Colors.primary
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    paddingVertical: 10
   }
 }) 
 
