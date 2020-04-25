@@ -3,18 +3,22 @@ import Colors from '../constants/Colors'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 import CustomInput from '../components/CustomInput'
+import * as ProductActions from '../store/actions/ProductActions'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
+import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { View, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
 
 const CreateProductScreen = props => {
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('')
-  const [image, setImage] = useState('')
-  const [category, setCategory] = useState('')
-  const [description, setDescription] = useState('')
+  const dispatch = useDispatch()
+
+  const [title, setTitle] = useState('title')
+  const [price, setPrice] = useState('1000')
+  const [image, setImage] = useState('https://www.ripleybelieves.com/img/world-facts-2018/why-is-it-called-hamburger.jpg')
+  const [category, setCategory] = useState('cat')
+  const [description, setDescription] = useState('desc')
   const [loginLoading, setLoginLoading] = useState(false)
 
   const tryLogin = async () => {
@@ -56,6 +60,10 @@ const CreateProductScreen = props => {
     }
   }, [tryLogin])
 
+  const createProduct = () => {
+    dispatch(ProductActions.createProduct(title, description, category, price, image))
+  }
+
   if (loginLoading)
     return <CustomActivityIndicator />
 
@@ -94,7 +102,7 @@ const CreateProductScreen = props => {
           <Ionicons size={35} color='grey' name='md-add' />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={createProduct}>
         <View style={styles.button}>
           <CustomText style={styles.buttonText}>Crear Producto</CustomText>
         </View>

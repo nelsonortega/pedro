@@ -1,5 +1,8 @@
 import Product from '../../models/product'
 
+//import { createDocument } from './FirestoreActions'
+//import { productCollection } from '../../constants/FirestoreCollections'
+
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const SET_PRODUTS = 'SET_PRODUTS'
 
@@ -35,31 +38,41 @@ export const fetchProducts = () => {
 
 export const createProduct = (title, description, category, price, img) => {
   return async dispatch => {
-    const response = await fetch('https://despensita-e856a.firebaseio.com/products.json', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'title': title,
-        'description': description,
-        'category': category,
-        'price': price,
-        'img': img
-      })
-    })
-    
-    const responseData = await response.json()
-    const id = responseData.name
+    // const response = await fetch('https://despensita-e856a.firebaseio.com/products.json', {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify({
+    //     'title': title,
+    //     'description': description,
+    //     'category': category,
+    //     'price': price,
+    //     'img': img
+    //   })
+    // })
 
-    dispatch({
-      type: CREATE_PRODUCT,
-      productData: {
-        id,
-        title,
-        description,
-        category,
-        price,
-        img
-      }
+    let json = JSON.parse({
+      "title": title, 
+      "description": description, 
+      "category": category, 
+      "price": price, 
+      "img": img, 
     })
+
+    //createDocument(productCollection, )
+    
+    // const responseData = await response.json()
+    // const id = responseData.name
+
+    // dispatch({
+    //   type: CREATE_PRODUCT,
+    //   productData: {
+    //     id,
+    //     title,
+    //     description,
+    //     category,
+    //     price,
+    //     img
+    //   }
+    // })
   }
 }
