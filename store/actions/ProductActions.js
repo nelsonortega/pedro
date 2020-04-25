@@ -6,7 +6,7 @@ export const SET_PRODUTS = 'SET_PRODUTS'
 export const fetchProducts = () => {
   return async dispatch => {
     try {
-      const response = await fetch('')
+      const response = await fetch('https://despensita-e856a.firebaseio.com/products.json')
 
       if (!response.ok) {
         throw new Error('Algo salió mal')
@@ -17,7 +17,7 @@ export const fetchProducts = () => {
 
       for (const key in responseData) {
         loadedProducts.push(new Product(
-          responseData[key].id,
+          key,
           responseData[key].title,
           responseData[key].description,
           responseData[key].category,
@@ -33,9 +33,9 @@ export const fetchProducts = () => {
   }
 }
 
-export const createPost = (title, description, category, price, img) => {
+export const createProduct = (title, description, category, price, img) => {
   return async dispatch => {
-    const response = await fetch('', {
+    const response = await fetch('https://despensita-e856a.firebaseio.com/products.json', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -48,7 +48,7 @@ export const createPost = (title, description, category, price, img) => {
     })
     
     const responseData = await response.json()
-    const id = responseData.id
+    const id = responseData.name
 
     dispatch({
       type: CREATE_PRODUCT,
@@ -58,7 +58,7 @@ export const createPost = (title, description, category, price, img) => {
         description,
         category,
         price,
-        imgs
+        img
       }
     })
   }

@@ -5,7 +5,7 @@ class Product {
     this.description = description
     this.category = category
     this.price = price
-    this.imgs = img
+    this.img = img
   }
 }
 
