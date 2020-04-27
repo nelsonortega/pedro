@@ -1,7 +1,7 @@
 import Product from '../../models/product'
 
-//import { createDocument } from './FirestoreActions'
-//import { productCollection } from '../../constants/FirestoreCollections'
+import { createDocument, getAllDocuments } from './FirestoreActions'
+import { productCollection } from '../../constants/FirestoreCollections'
 
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const SET_PRODUTS = 'SET_PRODUTS'
@@ -9,25 +9,19 @@ export const SET_PRODUTS = 'SET_PRODUTS'
 export const fetchProducts = () => {
   return async dispatch => {
     try {
-      const response = await fetch('https://despensita-e856a.firebaseio.com/products.json')
-
-      if (!response.ok) {
-        throw new Error('Algo salió mal')
-      }
-    
-      const responseData = await response.json()
       const loadedProducts = []
+      const responseData = await getAllDocuments(productCollection)
 
-      for (const key in responseData) {
+      responseData.forEach(product => {
         loadedProducts.push(new Product(
-          key,
-          responseData[key].title,
-          responseData[key].description,
-          responseData[key].category,
-          responseData[key].price,
-          responseData[key].img
+          product.id,
+          product.title,
+          product.description,
+          product.category,
+          product.price,
+          product.img
         ))
-      }
+      })
 
       dispatch ({ type: SET_PRODUTS, products: loadedProducts })
     } catch (error) {
@@ -38,41 +32,26 @@ export const fetchProducts = () => {
 
 export const createProduct = (title, description, category, price, img) => {
   return async dispatch => {
-    // const response = await fetch('https://despensita-e856a.firebaseio.com/products.json', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     'title': title,
-    //     'description': description,
-    //     'category': category,
-    //     'price': price,
-    //     'img': img
-    //   })
-    // })
-
-    let json = JSON.parse({
+    let newProduct = {
       "title": title, 
       "description": description, 
       "category": category, 
       "price": price, 
-      "img": img, 
+      "img": img
+    }
+
+    const response = await createDocument(productCollection, newProduct)
+
+    dispatch({
+      type: CREATE_PRODUCT,
+      productData: {
+        response,
+        title,
+        description,
+        category,
+        price,
+        img
+      }
     })
-
-    //createDocument(productCollection, )
-    
-    // const responseData = await response.json()
-    // const id = responseData.name
-
-    // dispatch({
-    //   type: CREATE_PRODUCT,
-    //   productData: {
-    //     id,
-    //     title,
-    //     description,
-    //     category,
-    //     price,
-    //     img
-    //   }
-    // })
   }
 }

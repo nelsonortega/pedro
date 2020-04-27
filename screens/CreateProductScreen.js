@@ -9,15 +9,17 @@ import CustomActivityIndicator from '../components/CustomActivityIndicator'
 import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { View, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, AsyncStorage, TouchableOpacity, Alert } from 'react-native'
 
 const CreateProductScreen = props => {
   const dispatch = useDispatch()
 
+  const [error, setError] = useState()
   const [title, setTitle] = useState('title')
   const [price, setPrice] = useState('1000')
   const [image, setImage] = useState('https://www.ripleybelieves.com/img/world-facts-2018/why-is-it-called-hamburger.jpg')
   const [category, setCategory] = useState('cat')
+  const [loading, setLoading] = useState(false)
   const [description, setDescription] = useState('desc')
   const [loginLoading, setLoginLoading] = useState(false)
 
@@ -60,8 +62,28 @@ const CreateProductScreen = props => {
     }
   }, [tryLogin])
 
-  const createProduct = () => {
-    dispatch(ProductActions.createProduct(title, description, category, price, image))
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Ocurrió un error', error, [{text: 'Ok'}])
+    }
+  }, [error])
+
+  const createProduct = async () => {
+    setError(null)
+    setLoading(true)
+    try {
+      await dispatch(ProductActions.createProduct(title, description, category, price, image))
+      Alert.alert(
+        'Éxito', 'Producto añadido correctamente',
+        [
+          { text: "Agregar otro", onPress: () => { setLoading(false) } },
+          { text: "Volver a Inicio", onPress: () => { props.navigation.popToTop() } }
+        ]
+      )
+    } catch (error) {
+      setError(error.message)
+      setLoading(false)
+    }
   }
 
   if (loginLoading)
@@ -102,11 +124,13 @@ const CreateProductScreen = props => {
           <Ionicons size={35} color='grey' name='md-add' />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer} onPress={createProduct}>
-        <View style={styles.button}>
-          <CustomText style={styles.buttonText}>Crear Producto</CustomText>
-        </View>
-      </TouchableOpacity>
+      {loading ? <CustomActivityIndicator small /> : (
+        <TouchableOpacity style={styles.buttonContainer} onPress={createProduct}>
+          <View style={styles.button}>
+            <CustomText style={styles.buttonText}>Crear Producto</CustomText>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

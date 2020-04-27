@@ -81,3 +81,14 @@ export function deleteDocument(collection,document_id){
         console.log("Error getting document:", error);
     });
 }
+
+// Get all docs
+export async function getAllDocuments(collection){
+    var docList = []
+    await collection.get().then(snapshot => {
+        snapshot.forEach(doc => {
+            docList.push(doc.data())
+        })
+    })
+    return docList
+}
