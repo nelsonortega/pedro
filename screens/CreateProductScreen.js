@@ -74,7 +74,7 @@ const CreateProductScreen = props => {
     const response = await fetch(uri)
     const blob = await response.blob()
 
-    var ref = db_storage.ref().child('images/' + Math.round(new Date().valueOf()).toString() + Math.random().toString())
+    var ref = db_storage.ref().child('images/' + Math.round(new Date().valueOf()).toString())
     await ref.put(blob)
     var imageUri = await ref.getDownloadURL()
     dispatch(ProductActions.createProduct(title, description, category, price, imageUri))
