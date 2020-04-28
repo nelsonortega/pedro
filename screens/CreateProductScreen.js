@@ -99,7 +99,7 @@ const CreateProductScreen = props => {
   }
 
   const createProduct = async () => {
-    if (validateInputs) {
+    if (validateInputs()) {
       return
     } else {
       setError(null)
