@@ -1,5 +1,6 @@
 import React from 'react'
 import Colors from '../constants/Colors'
+import * as ImagePicker from 'expo-image-picker'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 import CustomInput from '../components/CustomInput'
@@ -9,18 +10,19 @@ import CustomActivityIndicator from '../components/CustomActivityIndicator'
 import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { View, StyleSheet, AsyncStorage, TouchableOpacity, Alert } from 'react-native'
+import { db_storage } from '../store/actions/FirestoreActions'
+import { View, StyleSheet, AsyncStorage, TouchableOpacity, Picker, Alert, Image, ScrollView } from 'react-native'
 
 const CreateProductScreen = props => {
   const dispatch = useDispatch()
 
   const [error, setError] = useState()
-  const [title, setTitle] = useState('title')
-  const [price, setPrice] = useState('1000')
-  const [image, setImage] = useState('https://www.ripleybelieves.com/img/world-facts-2018/why-is-it-called-hamburger.jpg')
-  const [category, setCategory] = useState('cat')
+  const [title, setTitle] = useState('')
+  const [price, setPrice] = useState('')
+  const [image, setImage] = useState('')
+  const [category, setCategory] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [description, setDescription] = useState('desc')
+  const [description, setDescription] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
 
   const tryLogin = async () => {
@@ -68,29 +70,107 @@ const CreateProductScreen = props => {
     }
   }, [error])
 
-  const createProduct = async () => {
-    setError(null)
-    setLoading(true)
-    try {
-      await dispatch(ProductActions.createProduct(title, description, category, price, image))
-      Alert.alert(
-        'Éxito', 'Producto añadido correctamente',
-        [
-          { text: "Agregar otro", onPress: () => { setLoading(false) } },
-          { text: "Volver a Inicio", onPress: () => { props.navigation.popToTop() } }
-        ]
-      )
-    } catch (error) {
-      setError(error.message)
-      setLoading(false)
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri)
+    const blob = await response.blob()
+
+    var ref = db_storage.ref().child('images/' + Math.round(new Date().valueOf()).toString())
+    await ref.put(blob)
+    var imageUri = await ref.getDownloadURL()
+    dispatch(ProductActions.createProduct(title, description, category, price, imageUri))
+  }
+
+  const validateInputs = () => {
+    if (title.trim() === "" || description.trim() === "") {
+      Alert.alert('Error', 'Ingrese un título y descripción válidos')
+      return true
+    } else if (image.length <= 0) {
+      Alert.alert('Error', 'Debe seleccionar una imagen')
+      return true
+    } else if (price.length <= 0) {
+      Alert.alert('Error', 'Ingrese un precio válido')
+      return true
+    } else if (category === 0) {
+      Alert.alert('Error', 'Seleccione una categoría')
+      return true
+    } else {
+      return false
     }
   }
 
+  const createProduct = async () => {
+    if (validateInputs) {
+      return
+    } else {
+      setError(null)
+      setLoading(true)
+      try {
+        await uploadImage(image)
+        setLoading(false)
+        Alert.alert(
+          'Éxito', 'Producto añadido correctamente', [
+            { text: "Agregar otro", onPress: addOtherProduct },
+            { text: "Volver a Inicio", onPress: () => { props.navigation.popToTop() } }
+          ]
+        )
+      } catch (error) {
+        setError(error.message)
+        setLoading(false)
+      }
+    }
+  }
+
+  const addOtherProduct = () => {
+    setImage('')
+    setPrice('')
+    setTitle('')
+    setCategory(0)
+    setLoading(false)
+    setDescription('')
+  }
+
+  const addImage = () => {
+    Alert.alert(
+      'Atención', 'Seleccione una opción',
+      [
+        { text: "Galería", onPress: () => openCamera(false) },
+        { text: "Cámara", onPress: () => openCamera(true) }
+      ]
+    )
+  }
+
+  const openCamera = async value => {
+    let imagePickerOptions = {
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.5
+    }
+
+    let imageResult = value ? 
+      await ImagePicker.launchCameraAsync(imagePickerOptions) :
+      await ImagePicker.launchImageLibraryAsync(imagePickerOptions)
+
+    if (!imageResult.cancelled) {
+      setImage(imageResult.uri)
+    }
+  }
+
+  const changeImage = async () => {
+    Alert.alert(
+      'Atención', 'Desea cambiar la imagen?',
+      [
+        { text: "Eliminar", onPress: () => {setImage('')} },
+        { text: "Sí", onPress: addImage },
+        { text: "No" }
+      ]
+    )
+  }
+  
   if (loginLoading)
     return <CustomActivityIndicator />
 
   return (
-    <View style={styles.screen}>
+    <ScrollView style={styles.screen}>
       <CustomText style={styles.text}>Publicar un producto</CustomText>
       <View style={styles.center}>
         <CustomInput 
@@ -106,24 +186,40 @@ const CreateProductScreen = props => {
           onChangeText={text => setDescription(text)}
         />
         <CustomInput 
-          placeholder='Categoría' 
-          placeholderTextColor="grey" 
-          value={category} 
-          onChangeText={text => setCategory(text)}
-        />
-        <CustomInput 
           placeholder='Precio' 
+          keyboardType='numeric'
           placeholderTextColor="grey" 
           value={price} 
-          onChangeText={text => setPrice(text)}
+          onChangeText={text => setPrice(text.replace(/[^0-9]/g, ''))}
         />
-      </View>
-      <CustomText style={styles.text}>Añade una imagen</CustomText>
-      <TouchableOpacity>
-        <View style={styles.addImageButton}>
-          <Ionicons size={35} color='grey' name='md-add' />
+        <View style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
+            selectedValue={category}
+            onValueChange={itemValue => setCategory(itemValue)}
+          >
+            <Picker.Item label="Selecciona una categoría" value={0} />
+            <Picker.Item label="Alimentos" value={1} />
+            <Picker.Item label="Bebidas" value={2} />
+            <Picker.Item label="Higiene" value={3} />
+            <Picker.Item label="Mascotas" value={4} />
+
+          </Picker>
         </View>
-      </TouchableOpacity>
+      </View>
+      <CustomText style={styles.imageText}>Añade una imagen</CustomText>
+      
+      {image.length > 0 ? 
+        <TouchableOpacity onPress={changeImage}>
+          <Image source={{uri: image}} style={styles.image} />
+        </TouchableOpacity>
+        : (
+        <TouchableOpacity onPress={addImage}>
+          <View style={styles.addImageButton}>
+            <Ionicons size={35} color='grey' name='md-add' />
+          </View>
+        </TouchableOpacity>
+      )}
       {loading ? <CustomActivityIndicator small /> : (
         <TouchableOpacity style={styles.buttonContainer} onPress={createProduct}>
           <View style={styles.button}>
@@ -131,7 +227,7 @@ const CreateProductScreen = props => {
           </View>
         </TouchableOpacity>
       )}
-    </View>
+    </ScrollView>
   )
 }
 
@@ -144,7 +240,6 @@ CreateProductScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingTop: 20,
     backgroundColor: '#fff'
   },
   center: {
@@ -152,8 +247,26 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 17,
+    marginTop: 20,
     marginLeft: '5%',
     marginBottom: 10
+  },
+  imageText: {
+    fontSize: 17,
+    marginLeft: '5%',
+    marginBottom: 10
+  },
+  pickerContainer: {
+    height: 60,
+    paddingLeft: 10,
+    borderRadius: 7,
+    width: '90%',
+    backgroundColor: Colors.secondary,
+    marginBottom: 20
+  },
+  picker: {
+    height: 60,
+    color: 'grey'
   },
   addImageButton: {
     height: 120,
@@ -165,7 +278,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
   },
   buttonContainer: {
-    marginTop: 20,
+    marginVertical: 20,
     width: '100%',
     alignItems: 'center'
   },
@@ -178,6 +291,12 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     paddingVertical: 10
+  },
+  image: {
+    height: 170,
+    width: '90%',
+    borderRadius: 7,
+    marginLeft: '5%',
   }
 }) 
 

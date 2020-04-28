@@ -15,7 +15,10 @@ const Product = props => {
         <View>
           <CustomText bold style={styles.title}>{props.productItem.item.title}</CustomText>
           <CustomText numberOfLines={2} style={styles.description}>{props.productItem.item.description}</CustomText>
-          <CustomText bold style={styles.price}>₡{props.productItem.item.price}</CustomText>
+          {props.productItem.item.price === '0' ?
+            <CustomText bold style={styles.free}>Gratis</CustomText> :
+            <CustomText bold style={styles.price}>₡{props.productItem.item.price}</CustomText> 
+          }
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -56,6 +59,13 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontSize: 13,
     textAlign: 'right'
+  },
+  free: {
+    marginRight: 30,
+    marginVertical: 20,
+    fontSize: 13,
+    textAlign: 'right',
+    color: 'green'
   }
 })
 
