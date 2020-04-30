@@ -3,6 +3,7 @@ import * as Font from 'expo-font'
 import ReduxThunk from 'redux-thunk'
 import AppNavigator from './navigation/AppNavigator'
 import AuthReducer from './store/reducers/AuthReducer'
+import DataReducer from './store/reducers/DataReducer'
 import ProductReducer from './store/reducers/ProductReducer'
 
 import { useState } from 'react'
@@ -12,7 +13,8 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
-  product: ProductReducer
+  data: DataReducer,
+  products: ProductReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))

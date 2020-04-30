@@ -11,11 +11,12 @@ const CustomInput = props => {
 
 const styles = StyleSheet.create({
   input: {
-    padding: 15,
+    height: 60,
     width: '90%',
-    fontSize: 17,
+    fontSize: 16,
     borderRadius: 7,
     marginBottom: 20,
+    paddingHorizontal: 15,
     fontFamily: 'open-sans',
     backgroundColor: Colors.secondary
   }

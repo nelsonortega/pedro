@@ -1,14 +1,49 @@
 import React from 'react'
+import Colors from '../constants/Colors'
+import Product from '../components/Product'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
+import HomeHeader from '../components/HomeHeader'
+import * as ProductActions from '../store/actions/ProductActions'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
-import { useState, useEffect } from 'react'
-import { View, StyleSheet, Button, AsyncStorage } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect, useCallback } from 'react'
+import { View, StyleSheet, Button, AsyncStorage, FlatList } from 'react-native'
 
 const HomeScreen = props => {
+  const dispatch = useDispatch()
+
+  const categories = useSelector(state => state.data.categories)
+  const products = useSelector(state => state.products.products)
+  
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [route, setRoute] = useState('Authentication')
   const [loginLoading, setLoginLoading] = useState(false)
+
+  const loadProducts = useCallback(async () => {
+    setError(null)
+    setRefreshing(true)
+    try {
+      await dispatch(ProductActions.fetchProducts())
+    } catch (error) {
+      setError(error.message)
+    }
+    setRefreshing(false)
+  }, [dispatch, setError, setRefreshing])
+
+  const loadProductsError = useCallback(async () => {
+    setError(null)
+    setLoading(true)
+    try {
+      await dispatch(ProductActions.fetchProducts())
+    } catch (error) {
+      setError(error.message)
+    }
+    setLoading(false)
+  }, [dispatch, setError, setRefreshing])
 
   const tryLogin = async () => {
     setLoginLoading(true)
@@ -34,6 +69,10 @@ const HomeScreen = props => {
 
   useEffect(() => {
     tryLogin()
+    setLoading(true)
+    loadProducts().then(() => {
+      setLoading(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -51,13 +90,43 @@ const HomeScreen = props => {
     })
   }
 
-  if (loginLoading)
+  if (loginLoading || loading)
     return <CustomActivityIndicator />
 
+  const renderGridItem = productItem => {
+    return <Product productItem={productItem} />
+  }
+
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <CustomText bold style={styles.text}>Error al cargar los productos</CustomText>
+        <Button title='Intentar de nuevo' color={Colors.primary} onPress={loadProductsError} />
+      </View>
+    )  
+  }
+
   return (
-    <View style={styles.screen}>
-      <CustomText>Home</CustomText>
-      <Button title={'Crear Producto'} onPress={createProduct}/>
+    <View>
+      <FlatList
+        onRefresh={loadProducts}
+        refreshing={refreshing}
+        ListHeaderComponent={
+          <HomeHeader 
+            createProduct={createProduct}
+          />
+        }
+        keyExtractor={item => item.id}
+        data={products}
+        renderItem={renderGridItem}
+        style={styles.screen}
+      />
+      {products.length === 0 && !error ? 
+        <View style={styles.center}> 
+          <CustomText bold style={styles.text}>No hay productos registrados</CustomText> 
+        </View> : 
+        <View />
+      }
     </View>
   )
 }
@@ -70,11 +139,18 @@ HomeScreen.navigationOptions = navData => {
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  center: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    justifyContent: 'center'
+    marginTop: '50%',
+    alignItems: 'center'
+  },
+  text:{
+    fontSize: 16,
+    marginTop: 50,
+    marginBottom: 10
+  },
+  screen: {
+    backgroundColor: 'white'
   }
 }) 
 

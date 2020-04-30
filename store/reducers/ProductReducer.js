@@ -15,7 +15,7 @@ const ProductReducer = (state = initialState, action) => {
       }
     case CREATE_PRODUCT:
       const newProduct = new Product(
-        action.productData.id,
+        action.productData.response,
         action.productData.title,
         action.productData.description,
         action.productData.category,

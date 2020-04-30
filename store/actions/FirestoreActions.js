@@ -2,14 +2,14 @@
 import firebase from "firebase"
 import FirebaseKey from '../../constants/FirebaseKey'
 // Add the Firebase products that you want to use
-import "firebase/firestore";
+import "firebase/firestore"
 
 // Initialize Firebase 
-var dbFirebase= !firebase.apps.length ? firebase.initializeApp(FirebaseKey.FirebaseConfig):firebase.app();
+var dbFirebase= !firebase.apps.length ? firebase.initializeApp(FirebaseKey.FirebaseConfig):firebase.app()
 //var dbFirebase = firebase.initializeApp(FirebaseKey.FirebaseConfig)
 
 // multimedia instance
-var db_storage = dbFirebase.storage()
+export var db_storage = dbFirebase.storage()
 // database instance
 export var db_firestore = dbFirebase.firestore()
 
@@ -34,15 +34,15 @@ export async function getDocument(collection,document_id){
     var docRef = collection.doc(document_id)
     await docRef.get().then(function(doc) {
         if (doc.exists) {
-            console.log("Document data:", doc.data());
+            console.log("Document data:", doc.data())
             var data = doc.data()
             return data
         } else {
-            console.log("No such document!");
+            console.log("No such document!")
         }
     }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+        console.log("Error getting document:", error)
+    })
 }
 
 // Update a single document by id
@@ -57,11 +57,11 @@ export function updateDocument(collection,document_id,request){
             collection.doc(document_id).set(request)
             return "OK"
         } else {
-            console.log("No such document!");
+            console.log("No such document!")
         }
     }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+        console.log("Error getting document:", error)
+    })
 }
 
 // Delete a single document by id
@@ -75,9 +75,20 @@ export function deleteDocument(collection,document_id){
             collection.doc(document_id).delete()
             return "OK"
         } else {
-            console.log("No such document!");
+            console.log("No such document!")
         }
     }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+        console.log("Error getting document:", error)
+    })
+}
+
+// Get all docs
+export async function getAllDocuments(collection){
+    var docList = []
+    await collection.get().then(snapshot => {
+        snapshot.forEach(doc => {
+            docList.push(doc.data())
+        })
+    })
+    return docList
 }

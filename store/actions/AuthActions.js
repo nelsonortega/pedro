@@ -48,7 +48,7 @@ export const authenticate = (email, password, login) => {
         message = error
       }
       
-      throw new Error(message);
+      throw new Error(message)
     }
   
     const responseData = await response.json()

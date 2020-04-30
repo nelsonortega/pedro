@@ -1,30 +1,27 @@
 import Product from '../../models/product'
 
+import { createDocument, getAllDocuments } from './FirestoreActions'
+import { productCollection } from '../../constants/FirestoreCollections'
+
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const SET_PRODUTS = 'SET_PRODUTS'
 
 export const fetchProducts = () => {
   return async dispatch => {
     try {
-      const response = await fetch('')
-
-      if (!response.ok) {
-        throw new Error('Algo salió mal')
-      }
-    
-      const responseData = await response.json()
       const loadedProducts = []
+      const responseData = await getAllDocuments(productCollection)
 
-      for (const key in responseData) {
+      responseData.forEach(product => {
         loadedProducts.push(new Product(
-          responseData[key].id,
-          responseData[key].title,
-          responseData[key].description,
-          responseData[key].category,
-          responseData[key].price,
-          responseData[key].img
+          product.id,
+          product.title,
+          product.description,
+          product.category,
+          product.price,
+          product.img
         ))
-      }
+      })
 
       dispatch ({ type: SET_PRODUTS, products: loadedProducts })
     } catch (error) {
@@ -33,32 +30,27 @@ export const fetchProducts = () => {
   }
 }
 
-export const createPost = (title, description, category, price, img) => {
+export const createProduct = (title, description, category, price, img) => {
   return async dispatch => {
-    const response = await fetch('', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'title': title,
-        'description': description,
-        'category': category,
-        'price': price,
-        'img': img
-      })
-    })
-    
-    const responseData = await response.json()
-    const id = responseData.id
+    let newProduct = {
+      "title": title, 
+      "description": description, 
+      "category": category, 
+      "price": price, 
+      "img": img
+    }
+
+    const response = await createDocument(productCollection, newProduct)
 
     dispatch({
       type: CREATE_PRODUCT,
       productData: {
-        id,
+        response,
         title,
         description,
         category,
         price,
-        imgs
+        img
       }
     })
   }
