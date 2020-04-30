@@ -3,11 +3,14 @@ import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 
 import { View, StyleSheet } from 'react-native'
-
+import { Image } from 'react-native'
 const ContactScreen = props => {
   return (
     <View style={styles.screen}>
-      <CustomText>ContactScreen</CustomText>
+      <Image source={require('../assets/icon.png')} style={styles.icon}/>
+      <CustomText bold>¿Necesitas ponerte en contacto?</CustomText>
+      <CustomText></CustomText>
+      <CustomText>Llámanos al 2234-1060</CustomText>
     </View>
   )
 }
@@ -24,6 +27,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     justifyContent: 'center'
+  },
+  icon: {
+    width: 200,
+    height: 200
   }
 }) 
 
