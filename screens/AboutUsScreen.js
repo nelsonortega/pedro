@@ -2,15 +2,14 @@ import React from 'react'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 
-import { View, StyleSheet } from 'react-native'
-import { Image } from 'react-native'
+import { View, StyleSheet, Image } from 'react-native'
 
 const AboutUsScreen = props => {
   return (
     <View style={styles.screen}>
       <Image source={require('../assets/about_us.jpg')} style={styles.icon}/>
       <CustomText bold style={styles.title}>La Despencita</CustomText>
-      <CustomText style={styles.desc}>Somos un negocio familiar con más de 60 años de estar brindándole a las familias facilidad, innovación y amistad. Queremos solucionar su día a día con nuestros productos y servicios.</CustomText>
+      <CustomText style={styles.description}>Somos un negocio familiar con más de 60 años de estar brindándole a las familias facilidad, innovación y amistad. Queremos solucionar su día a día con nuestros productos y servicios.</CustomText>
     </View>
   )
 }
@@ -28,13 +27,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   icon: {
-    width: 500,
+    width: '100%',
     height: 200
   },
   title:{
+    fontSize: 17,
     marginTop: 30
   },
-  desc:{
+  description:{
     textAlign: 'justify',
     marginRight: 20,
     marginLeft: 20,

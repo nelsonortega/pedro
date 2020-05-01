@@ -1,11 +1,13 @@
 import React from 'react'
 import CustomText from './CustomText'
+import Colors from '../constants/Colors'
 
-import { StyleSheet, View, TouchableNativeFeedback, Image } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 
 const Product = props => {
   return (
-    <TouchableNativeFeedback>
+    <View style={{width: '97%'}}>
       <View style={styles.productContainer}>
         <Image 
           style={styles.imageStyle}
@@ -21,7 +23,10 @@ const Product = props => {
           }
         </View>
       </View>
-    </TouchableNativeFeedback>
+      <TouchableOpacity style={styles.floatingButton}>
+        <Ionicons size={30} color='white' name='md-add' style={styles.icon}/>
+      </TouchableOpacity>
+    </View> 
   )
 }
 
@@ -29,8 +34,9 @@ const styles = StyleSheet.create({
   productContainer: {
     flex: 1,
     margin: 20,
-    elevation: 10,
+    borderWidth: 0.5,
     borderRadius: 20,
+    borderColor: 'grey',
     backgroundColor: 'white'
   },
   lineSeparator: {
@@ -66,6 +72,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'right',
     color: 'green'
+  },
+  floatingButton: {
+    top: 0,
+    right: 0,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary
   }
 })
 
