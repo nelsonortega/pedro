@@ -1,13 +1,52 @@
 import React from 'react'
 import CustomText from './CustomText'
 import Colors from '../constants/Colors'
+import ChangeQuantity from './ChangeQuantity'
+import * as ProductActions from '../store/actions/ProductActions'
 
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Image, Modal } from 'react-native'
 
 const Product = props => {
+  const dispatch = useDispatch()
+  const [quantity, setQuantity] = useState(1)
+  const [modalVisible, setModalVisible] = useState(false)
+
+  const addItemToCart = () => {
+    dispatch(ProductActions.addItemToCart(
+      props.productItem.item.id, 
+      props.productItem.item.title, 
+      quantity, 
+      props.productItem.item.price, 
+      props.productItem.item.img
+    ))
+    setModalVisible(false)
+  }
+
+  const openModal = () => {
+    setModalVisible(true)
+  }
+
+  const closeModal = () => {
+    setModalVisible(false)
+  }
+
+  const moreQuantity = () => {
+    if (quantity < 10) {
+      setQuantity(quantity+1)
+    }
+  }
+
+  const lessQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity-1)
+    }
+  }
+
   return (
-    <View style={{width: '97%'}}>
+    <View style={styles.container}>
       <View style={styles.productContainer}>
         <Image 
           style={styles.imageStyle}
@@ -23,14 +62,26 @@ const Product = props => {
           }
         </View>
       </View>
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
         <Ionicons size={30} color='white' name='md-add' style={styles.icon}/>
       </TouchableOpacity>
+      <Modal visible={modalVisible} animationType="fade" transparent={true}>
+        <ChangeQuantity
+          lessQuantity={lessQuantity}
+          moreQuantity={moreQuantity}
+          closeModal={closeModal}
+          quantity={quantity}
+          addItemToCart={addItemToCart}
+        />
+      </Modal>
     </View> 
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: '97%'
+  },
   productContainer: {
     flex: 1,
     margin: 20,

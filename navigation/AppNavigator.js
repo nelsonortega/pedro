@@ -9,6 +9,7 @@ import ContactScreen from '../screens/ContactScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import CreateProductScreen from '../screens/CreateProductScreen'
 import AuthenticationScreen from '../screens/AuthenticationScreen'
+import UserInformationScreen from '../screens/UserInformationScreen'
 
 import { Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
@@ -54,6 +55,7 @@ const HomeNavigator = createStackNavigator({
   Home: HomeScreen,
   Cart: CartScreen,
   CreateProduct: CreateProductScreen,
+  UserInformation: UserInformationScreen,
   Authentication: {
     screen: AuthenticationScreen,
     params: {'route': 'CreateProduct', 'hideIcon': true}

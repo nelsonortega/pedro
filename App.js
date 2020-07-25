@@ -4,6 +4,7 @@ import ReduxThunk from 'redux-thunk'
 import AppNavigator from './navigation/AppNavigator'
 import AuthReducer from './store/reducers/AuthReducer'
 import DataReducer from './store/reducers/DataReducer'
+import OrderReducer from './store/reducers/OrderReducer'
 import ProductReducer from './store/reducers/ProductReducer'
 
 import { useState } from 'react'
@@ -14,6 +15,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 const rootReducer = combineReducers({
   auth: AuthReducer,
   data: DataReducer,
+  orders: OrderReducer,
   products: ProductReducer
 })
 

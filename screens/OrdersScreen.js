@@ -1,12 +1,22 @@
 import React from 'react'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
+import * as OrderActions from '../store/actions/OrderActions'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 
-import { useState, useEffect } from 'react'
-import { View, StyleSheet, AsyncStorage } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect, useCallback } from 'react'
+import { View, StyleSheet, AsyncStorage, FlatList } from 'react-native'
+import OrderItem from '../components/OrderItem'
 
 const OrdersScreen = props => {
+  const dispatch = useDispatch()
+
+  const orders = useSelector(state => state.orders.orders)
+
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [loginLoading, setLoginLoading] = useState(false)
 
   const tryLogin = async () => {
@@ -29,9 +39,24 @@ const OrdersScreen = props => {
 
     setLoginLoading(false)
   }
+
+  const loadOrders = useCallback(async () => {
+    setError(null)
+    setRefreshing(true)
+    try {
+      await dispatch(OrderActions.fetchOrders())
+    } catch (error) {
+      setError(error.message)
+    }
+    setRefreshing(false)
+  }, [dispatch, setError, setRefreshing])
   
   useEffect(() => {
     tryLogin()
+    setLoading(true)
+    loadOrders().then(() => {
+      setLoading(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -44,10 +69,22 @@ const OrdersScreen = props => {
 
   if (loginLoading)
     return <CustomActivityIndicator />
+
+  const renderOrderItem = orderItem => {
+    return <OrderItem order={orderItem.item} />
+  }
   
   return (
     <View style={styles.screen}>
-      <CustomText>OrdersScreen</CustomText>
+      <CustomText bold style={styles.title}>Ordenes</CustomText>
+      <FlatList
+        onRefresh={loadOrders}
+        refreshing={refreshing}
+        keyExtractor={item => item.id}
+        data={orders}
+        renderItem={renderOrderItem}
+        style={styles.list}
+      />
     </View>
   )
 }
@@ -64,6 +101,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     justifyContent: 'center'
+  },
+  title: {
+    fontSize: 20,
+    marginVertical: 15
+  },
+  list: {
+    width: '100%'
   }
 }) 
 

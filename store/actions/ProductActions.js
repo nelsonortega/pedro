@@ -5,6 +5,68 @@ import { productCollection } from '../../constants/FirestoreCollections'
 
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const SET_PRODUTS = 'SET_PRODUTS'
+export const UPDATE_CART = 'UPDATE_CART'
+export const DELETE_CART = 'DELETE_CART'
+export const RESET_CART = 'RESET_CART'
+export const EDIT_CART = 'EDIT_CART'
+export const ADD_CART = 'ADD_CART'
+
+export const resetCart = () => {
+  return async dispatch => {
+    dispatch({ type: RESET_CART })
+  }
+}
+
+export const addItemToCart = (id, title, quantity, price, img) => {
+  return async (dispatch, getState) => {
+    const cartState = getState().products.cart
+    let filteredCart = cartState.filter(item => item.id === id)
+
+    if (filteredCart.length > 0) {
+      dispatch({
+        type: UPDATE_CART,
+        product: {
+          id,
+          quantity
+        }
+      })
+    } else {
+      dispatch({
+        type: ADD_CART,
+        product: {
+          id,
+          title,
+          quantity,
+          price,
+          img
+        }
+      })
+    }
+  }
+}
+
+export const deleteItemFromCart = (id) => {
+  return async dispatch => {
+    dispatch({
+      type: DELETE_CART,
+      product: {
+        id
+      }
+    })
+  }
+}
+
+export const editItemFromCart = (id, quantity) => {
+  return async dispatch => {
+    dispatch({
+      type: EDIT_CART,
+      product: {
+        id,
+        quantity
+      }
+    })
+  }
+}
 
 export const fetchProducts = () => {
   return async dispatch => {
