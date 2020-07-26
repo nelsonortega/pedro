@@ -7,6 +7,7 @@ import OrdersScreen from '../screens/OrdersScreen'
 import AboutUsScreen from '../screens/AboutUsScreen'
 import ContactScreen from '../screens/ContactScreen'
 import ProfileScreen from '../screens/ProfileScreen'
+import OrderDetailScreen from '../screens/OrderDetailScreen'
 import CreateProductScreen from '../screens/CreateProductScreen'
 import AuthenticationScreen from '../screens/AuthenticationScreen'
 import UserInformationScreen from '../screens/UserInformationScreen'
@@ -63,7 +64,8 @@ const HomeNavigator = createStackNavigator({
 }, { defaultNavigationOptions: navigationOptions })
 
 const OrdersNavigator = createStackNavigator({
-  Orders: OrdersScreen
+  Orders: OrdersScreen,
+  OrderDetail: OrderDetailScreen
 }, { defaultNavigationOptions: navigationOptions })
 
 const ContactNavigator = createStackNavigator({

@@ -3,6 +3,7 @@ import CustomText from './CustomText'
 
 import { useState, useEffect } from 'react'
 import { StyleSheet, View, Image } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const OrderItem = props => {
   const [total, setTotal] = useState(0)
@@ -15,8 +16,14 @@ const OrderItem = props => {
     setTotal(totalPrice)
   }, [])
 
+  const openDetail = () => {
+    props.navigation.navigate('OrderDetail',  {
+      order: props.order
+    })
+  }
+
   return (
-    <View style={styles.orderContainer}>
+    <TouchableOpacity style={styles.orderContainer} onPress={openDetail}>
       <Image 
         style={styles.productImage}
         source={{uri: props.order.products[0].img}}
@@ -24,7 +31,7 @@ const OrderItem = props => {
       <CustomText bold>{total}</CustomText>
       <CustomText bold>{props.order.clientData.express}</CustomText>
       <CustomText bold>{props.order.state}</CustomText>
-    </View>
+    </TouchableOpacity>
   )
 }
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import OrderItem from '../components/OrderItem'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 import * as OrderActions from '../store/actions/OrderActions'
@@ -7,7 +8,6 @@ import CustomActivityIndicator from '../components/CustomActivityIndicator'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useCallback } from 'react'
 import { View, StyleSheet, AsyncStorage, FlatList } from 'react-native'
-import OrderItem from '../components/OrderItem'
 
 const OrdersScreen = props => {
   const dispatch = useDispatch()
@@ -71,12 +71,12 @@ const OrdersScreen = props => {
     return <CustomActivityIndicator />
 
   const renderOrderItem = orderItem => {
-    return <OrderItem order={orderItem.item} />
+    return <OrderItem order={orderItem.item} navigation={props.navigation} />
   }
   
   return (
     <View style={styles.screen}>
-      <CustomText bold style={styles.title}>Ordenes</CustomText>
+      <CustomText bold style={styles.title}>Órdenes</CustomText>
       <FlatList
         onRefresh={loadOrders}
         refreshing={refreshing}
