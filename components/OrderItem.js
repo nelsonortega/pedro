@@ -1,12 +1,16 @@
 import React from 'react'
 import CustomText from './CustomText'
 
+import { useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { StyleSheet, View, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const OrderItem = props => {
+  const orderStates = useSelector(state => state.data.states)
+  
   const [total, setTotal] = useState(0)
+  const [orderState, setOrderState] = useState()
 
   useEffect(() => {
     let totalPrice = 0
@@ -14,6 +18,9 @@ const OrderItem = props => {
       totalPrice = totalPrice + (parseInt(product.price) * product.quantity)
     })
     setTotal(totalPrice)
+
+    let stateObject = orderStates.find(state => state.id === props.order.state.toString())
+    setOrderState(stateObject.name)
   }, [])
 
   const openDetail = () => {
@@ -24,36 +31,50 @@ const OrderItem = props => {
 
   return (
     <TouchableOpacity style={styles.orderContainer} onPress={openDetail}>
-      <Image 
-        style={styles.productImage}
-        source={{uri: props.order.products[0].img}}
-      />
-      <CustomText bold>{total}</CustomText>
-      <CustomText bold>{props.order.clientData.express}</CustomText>
-      <CustomText bold>{props.order.state}</CustomText>
+      <View style={styles.container}>
+        <Image 
+          style={styles.productImage}
+          source={{uri: props.order.products[0].img}}
+        />
+        <View>
+          <CustomText bold>{props.order.clientData.name}</CustomText>
+          <CustomText bold>₡{total}</CustomText>
+          {props.order.clientData.express === 1 ? 
+            <CustomText bold>Express</CustomText> : <></>
+          }
+        </View>
+      </View>
+      <View style={styles.container}>
+        <CustomText bold>{orderState}</CustomText>
+      </View>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   orderContainer: {
-    height: 100,
+    height: 90,
     width: '90%',
     elevation: 7,
     display: 'flex',
     borderRadius: 10,
     marginLeft: '5%',
-    marginVertical: 10,
+    paddingHorizontal: 10,
+    marginVertical: 5,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: 'white',
     justifyContent: 'space-between'
   },
+  container: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
   productImage: {
-    width: 80,
-    height: 80, 
-    borderRadius: 7,
-    marginHorizontal: 10
+    width: 70,
+    height: 70, 
+    marginRight: 10,
+    borderRadius: 7
   }
 })
 

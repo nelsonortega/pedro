@@ -12,7 +12,7 @@ import { View, StyleSheet, AsyncStorage, FlatList } from 'react-native'
 const OrdersScreen = props => {
   const dispatch = useDispatch()
 
-  const orders = useSelector(state => state.orders.orders)
+  const orders = useSelector(state => state.orders.orders.filter(order => order.state != "4"))
 
   const [error, setError] = useState()
   const [loading, setLoading] = useState(false)
@@ -85,6 +85,11 @@ const OrdersScreen = props => {
         renderItem={renderOrderItem}
         style={styles.list}
       />
+      {orders.length === 0 && !error && !loading ? 
+        <View style={styles.center}> 
+          <CustomText bold>No hay órdenes pendientes</CustomText> 
+        </View> : <></>
+      }
     </View>
   )
 }
@@ -101,6 +106,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     justifyContent: 'center'
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center'
   },
   title: {
     fontSize: 20,
