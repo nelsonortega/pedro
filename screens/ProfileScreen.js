@@ -1,11 +1,12 @@
 import React from 'react'
+import Colors from '../constants/Colors'
 import CustomText from '../components/CustomText'
 import HeaderIcon from '../components/HeaderIcon'
 import * as AuthActions from '../store/actions/AuthActions'
 
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { View, StyleSheet, Button, Alert, AsyncStorage } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Alert, AsyncStorage } from 'react-native'
 
 const ProfileScreen = props => {
   const dispatch = useDispatch()
@@ -54,8 +55,11 @@ const ProfileScreen = props => {
 
   return (
     <View style={styles.screen}>
-      <CustomText>ProfileScreen</CustomText>
-      <Button title={'Salir'} onPress={logout}/>
+      <TouchableOpacity style={styles.buttonContainer} onPress={logout}>
+        <View style={styles.button}>
+          <CustomText style={styles.buttonText}>Cerrar Sesión</CustomText>
+        </View>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -72,6 +76,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     justifyContent: 'center'
+  },
+  buttonContainer: {
+    height: '10%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  button: {
+    width: '90%',
+    height: '60%',
+    borderRadius: 7,
+    justifyContent: 'center',
+    backgroundColor: Colors.primary
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center'
   }
 }) 
 
