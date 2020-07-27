@@ -1,4 +1,5 @@
-import { CREATE_ORDER, FINISH_ORDER, SET_ORDERS } from "../actions/OrderActions"
+import OrderItem from '../../models/order'
+import { CREATE_ORDER, FINISH_ORDER, SET_ORDERS, UPDATE_ORDER } from "../actions/OrderActions"
 
 const initialState = {
   orders: [],
@@ -16,6 +17,23 @@ const OrderReducer = (state = initialState, action) => {
       return {
         ...state,
         orderCreated: true
+      }
+    case UPDATE_ORDER:
+      let updatedOrders = state.orders.map(order => {
+        if (order.id === action.updatedOrder.id) {
+          return new OrderItem(
+            action.updatedOrder.id,
+            action.updatedOrder.products,
+            action.updatedOrder.clientData,
+            action.updatedOrder.state
+          )
+        } else {
+          return order
+        }
+      })
+      return {
+        ...state,
+        orders: updatedOrders
       }
     case FINISH_ORDER:
       return {

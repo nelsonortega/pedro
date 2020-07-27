@@ -1,11 +1,12 @@
 import Order from '../../models/order'
 
-import { createDocument, getAllDocuments } from './FirestoreActions'
 import { orderCollection } from '../../constants/FirestoreCollections'
+import { createDocument, getAllDocuments, updateDocument } from './FirestoreActions'
 
-export const CREATE_ORDER = 'CREATE_ORDER'
-export const FINISH_ORDER = 'FINISH_ORDER'
 export const SET_ORDERS = 'SET_ORDERS'
+export const CREATE_ORDER = 'CREATE_ORDER'
+export const UPDATE_ORDER = 'UPDATE_ORDER'
+export const FINISH_ORDER = 'FINISH_ORDER'
 
 export const fetchOrders = () => {
   return async dispatch => {
@@ -48,6 +49,20 @@ export const createOrder = (cart, name, phone, express, direction, notes) => {
     await createDocument(orderCollection, newOrder)
 
     dispatch ({ type: CREATE_ORDER })
+  }
+}
+
+export const updateOrderState = (order, newState) => {
+  return async dispatch => {
+
+    let orderUpdated = {
+      ...order,
+      "state": newState
+    }
+
+    await updateDocument(orderCollection, order.id, orderUpdated)
+
+    dispatch ({ type: UPDATE_ORDER, updatedOrder: orderUpdated })
   }
 }
 
